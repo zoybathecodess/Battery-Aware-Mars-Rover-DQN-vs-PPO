@@ -1,5 +1,32 @@
-# Battery-Aware-Mars-Rover-DQN-vs-PPO
 # Battery-Aware Mars Rover Navigation using DQN vs PPO
+
+# Repository Structure
+
+```
+Battery-Aware-Mars-Rover-DQN-vs-PPO/
+│
+├── rover_env.py                # Battery-aware Mars environment
+├── dqn_agent.py                # DQN implementation
+├── ppo_agent.py                # PPO implementation
+├── train_dqn.py                # DQN training script
+├── train_ppo.py                # PPO training script
+│
+├── dqn_results.pkl             # DQN training metrics
+├── ppo_results.pkl             # PPO training metrics
+│
+├── compare_reward.png
+├── compare_steps.png
+├── compare_success_rate.png
+├── compare_battery.png
+├── compare_budget_margin.png
+├── DQN_vs_PPO_Overlapping.png
+│
+├── Battery_Aware_Rover.png     # environment visualization
+├── PPO_Training_Results.png
+│
+├── DQN_PPO_Agents.ipynb        # full notebook
+└── README.md
+```
 
 ## Overview
 
@@ -38,6 +65,29 @@ Train a reinforcement learning rover that:
 
 ---
 
+# Solution Approach
+
+We compare two RL agents:
+
+### DQN Agent
+
+* Value-based method
+* Learns Q-values
+* Uses replay buffer
+* ε-greedy exploration
+* Stable but slower learning
+
+### PPO Agent
+
+* Policy-gradient method
+* Actor-Critic architecture
+* Clipped objective
+* More stable updates
+* Better exploration
+
+---
+
+
 # Environment Description
 
 Grid-based Mars terrain contains:
@@ -61,102 +111,50 @@ State includes:
 
 ---
 
-# Solution Approach
-
-We compare two RL agents:
-
-### DQN Agent
-
-* Value-based method
-* Learns Q-values
-* Uses replay buffer
-* ε-greedy exploration
-* Stable but slower learning
-
-### PPO Agent
-
-* Policy-gradient method
-* Actor-Critic architecture
-* Clipped objective
-* More stable updates
-* Better exploration
-
----
 
 # DQN Solution Flowchart
-
+```mermaid
+flowchart TD
+    A[Start] --> B[Initialize Environment]
+    B --> C[Initialize DQN Network]
+    C --> D[Reset Environment]
+    D --> E[Get State]
+    E --> F[Select Action epsilon-greedy]
+    F --> G[Execute Action]
+    G --> H[Receive Reward and Next State]
+    H --> I[Store in Replay Buffer]
+    I --> J[Sample Mini Batch]
+    J --> K[Compute Q Target]
+    K --> L[Update DQN Network]
+    L --> M[Update Target Network]
+    M --> N{Episode Done?}
+    N -->|No| E
+    N -->|Yes| O[Log Metrics]
+    O --> P[Next Episode]
+    P --> D
 ```
-Start
-  ↓
-Initialize Environment
-  ↓
-Initialize DQN Network
-  ↓
-Reset Rover Environment
-  ↓
-Get Current State
-  ↓
-Select Action (ε-greedy)
-  ↓
-Execute Action
-  ↓
-Receive Reward & Next State
-  ↓
-Store in Replay Buffer
-  ↓
-Sample Mini Batch
-  ↓
-Update Q Network
-  ↓
-Update Target Network
-  ↓
-Episode Done?
-  ↓        ↓
- No        Yes
- ↓          ↓
-Continue   Log Results
-            ↓
-        Next Episode
-            ↓
-           End
-```
-
 ---
 
 # PPO Solution Flowchart
 
-```
-Start
-  ↓
-Initialize Environment
-  ↓
-Initialize Actor-Critic Networks
-  ↓
-Reset Rover Environment
-  ↓
-Collect Trajectory
-  ↓
-Store States, Actions, Rewards
-  ↓
-Compute Advantage (GAE)
-  ↓
-Calculate PPO Loss
-  ↓
-Clip Policy Update
-  ↓
-Update Actor Network
-  ↓
-Update Critic Network
-  ↓
-Episode Done?
-  ↓        ↓
- No        Yes
- ↓          ↓
-Continue   Log Results
-            ↓
-        Next Episode
-            ↓
-           End
+```mermaid 
+flowchart TD
+    A[Start] --> B[Initialize Environment]
+    B --> C[Initialize Actor Network]
+    C --> D[Initialize Critic Network]
+    D --> E[Reset Environment]
+    E --> F[Collect Trajectory]
+    F --> G[Store States Actions Rewards]
+    G --> H[Compute Advantages GAE]
+    H --> I[Compute PPO Loss]
+    I --> J[Clip Policy Ratio]
+    J --> K[Update Actor Network]
+    K --> L[Update Critic Network]
+    L --> M{Episode Done?}
+    M -->|No| F
+    M -->|Yes| N[Log Metrics]
+    N --> O[Next Episode]
+    O --> E
 ```
 
 ---
@@ -180,33 +178,6 @@ The rover receives:
 
 ---
 
-# Repository Structure
-
-```
-Battery-Aware-Mars-Rover-DQN-vs-PPO/
-│
-├── rover_env.py                # Battery-aware Mars environment
-├── dqn_agent.py                # DQN implementation
-├── ppo_agent.py                # PPO implementation
-├── train_dqn.py                # DQN training script
-├── train_ppo.py                # PPO training script
-│
-├── dqn_results.pkl             # DQN training metrics
-├── ppo_results.pkl             # PPO training metrics
-│
-├── compare_reward.png
-├── compare_steps.png
-├── compare_success_rate.png
-├── compare_battery.png
-├── compare_budget_margin.png
-├── DQN_vs_PPO_Overlapping.png
-│
-├── Battery_Aware_Rover.png     # environment visualization
-├── PPO_Training_Results.png
-│
-├── DQN_PPO_Agents.ipynb        # full notebook
-└── README.md
-```
 
 ---
 
@@ -292,14 +263,3 @@ The repository generates:
 * Multi-agent rover coordination
 
 ---
-
-# Author
-
-Battery-Aware Autonomous Rover Navigation using Deep Reinforcement Learning
-DQN vs PPO Comparative Study
-
----
-
-# License
-
-This project is for academic and research purposes.
